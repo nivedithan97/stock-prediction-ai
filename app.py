@@ -1,10 +1,7 @@
 import streamlit as st
-from stock_ai_dashboard import (
-    get_stock_data,
-    fetch_dummy_news,
-    analyze_sentiment,
-    summarize_news
-)
+from data_fetcher import get_stock_data, fetch_dummy_news
+from sentiment_analysis import analyze_sentiment
+from summariser import summarize_news
 
 st.title("Stock Analysis Dashboard")
 
