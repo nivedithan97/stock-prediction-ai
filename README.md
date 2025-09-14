@@ -10,5 +10,5 @@ An interactive Streamlit dashboard that analyzes stocks (user-selected or market
 - Generate human-friendly insight summaries using Generative AI (OpenAI or other).  
 - Chatbot interface for interactive Q&A.  
 - Streamlit dashboard for UX and visualization.  
-- (Future) Multimodal deep learning model combining price time-series + news embeddings.
+- Multimodal deep learning model combining price time-series + news embeddings.
 
