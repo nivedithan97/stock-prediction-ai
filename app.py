@@ -1,7 +1,7 @@
 import streamlit as st
+
+# Import lightweight modules first
 from data_fetcher import get_stock_data, fetch_dummy_news
-from sentiment_analysis import analyze_sentiment
-from summariser import summarize_news
 
 st.title("Stock Analysis Dashboard")
 
@@ -20,13 +20,17 @@ if ticker:
     for item in news:
         st.write(f"- {item}")
 
-    # Sentiment
+    # Lazy load sentiment analysis
     st.subheader("Sentiment Analysis")
-    sentiment_results = analyze_sentiment(news)
-    for r in sentiment_results:
-        st.write(f"**{r['headline']}** → {r['sentiment']} (confidence: {r['confidence']})")
+    if st.button("Analyze Sentiment"):
+        from sentiment_analysis import analyze_sentiment  # delayed import
+        sentiment_results = analyze_sentiment(news)
+        for r in sentiment_results:
+            st.write(f"**{r['headline']}** → {r['sentiment']} (confidence: {r['confidence']})")
 
-    # Summary
+    # Lazy load summarizer
     st.subheader("GenAI News Summary")
-    summary = summarize_news(news)
-    st.write(summary)
+    if st.button("Summarize News"):
+        from summariser import summarize_news  # delayed import
+        summary = summarize_news(news)
+        st.write(summary)
