@@ -1,42 +1,35 @@
 import streamlit as st
-import yfinance as yf
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+from stock_ai_dashboard import (
+    get_stock_data,
+    fetch_dummy_news,
+    analyze_sentiment,
+    summarize_news
+)
 
-st.set_page_config(page_title="AI Stock Dashboard", layout="wide")
-st.title("AI-Powered Stock Dashboard")
+st.title("Stock Analysis Dashboard")
 
-# Sidebar input
-st.sidebar.header("Stock Selection")
-ticker = st.sidebar.text_input("Enter stock ticker (e.g., AAPL, NVDA, MSTR)", "AAPL")
-date = st.sidebar.date_input("Select a date")
+ticker = st.text_input("Enter stock ticker (e.g., NVDA, AAPL):")
 
 if ticker:
-    st.write(f"### Analyzing {ticker} on {date}")
+    # Stock prices
+    high, low = get_stock_data(ticker)
+    st.subheader(f"Stock Prices for {ticker}")
+    st.write(f"**High (Today):** ${high}")
+    st.write(f"**Low (Today):** ${low}")
 
-if ticker and date:
-    stock = yf.Ticker(ticker)
-    df = stock.history(interval="5m", start=date, end=date + pd.Timedelta(days=1))
+    # News
+    st.subheader("Related News")
+    news = fetch_dummy_news(ticker)
+    for item in news:
+        st.write(f"- {item}")
 
-    if not df.empty:
-        st.success(f"Fetched {len(df)} records for {ticker}")
-        st.dataframe(df.head())
-    else:
-        st.warning("No data found for this date.")
+    # Sentiment
+    st.subheader("Sentiment Analysis")
+    sentiment_results = analyze_sentiment(news)
+    for r in sentiment_results:
+        st.write(f"**{r['headline']}** → {r['sentiment']} (confidence: {r['confidence']})")
 
-if not df.empty:
-    high_row = df.loc[df['High'].idxmax()]
-    low_row = df.loc[df['Low'].idxmin()]
-
-    st.subheader("🔎 Key Levels")
-    st.write(f"**High Price:** {high_row['High']:.2f} at {high_row.name}")
-    st.write(f"**Low Price:** {low_row['Low']:.2f} at {low_row.name}")
-
-    # Plot
-    fig, ax = plt.subplots(figsize=(10,5))
-    sns.lineplot(data=df, x=df.index, y="Close", ax=ax, label="Close Price")
-    ax.axhline(high_row['High'], color="green", linestyle="--", label="Day High")
-    ax.axhline(low_row['Low'], color="red", linestyle="--", label="Day Low")
-    ax.legend()
-    st.pyplot(fig)
+    # Summary
+    st.subheader("GenAI News Summary")
+    summary = summarize_news(news)
+    st.write(summary)
