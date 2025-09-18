@@ -52,7 +52,7 @@ def fetch_hourly_data():
                 print(f"No trading-hours data for {stock}, skipping sheet...")
                 continue
 
-            # 🔹 Remove timezone info for Excel compatibility
+            # Remove timezone info for Excel compatibility
             data.index = data.index.tz_localize(None)
 
             data.to_excel(writer, sheet_name=stock)
